@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guida pratica a Google Gemini per i docenti — IIS Mendel</title>
+<meta name="description" content="Guida operativa a Google Gemini per i docenti dell'IIS Mendel: impostazioni, modelli, Gem, YouTube, Canvas, Workspace, Deep Research, NotebookLM e controlli di qualità, con prompt pronti da copiare.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f5f5; --surface:#ffffff; --surface-2:#f1f8f2; --line:#dfe5df;
+  --text:#1a1a1a; --muted:#4d5a4e;
+  --green:#2e7d32; --green-d:#1b5e20; --green-dd:#123c16; --green-l:#4caf50;
+  --tint:#e8f5e9; --tint-2:#c8e6c9;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--green);text-decoration:underline}
+a:hover{color:var(--green-d)}
+:focus-visible{outline:3px solid var(--green-l);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:linear-gradient(135deg,var(--green-d),var(--green-dd));box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.hd-in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+.logo{width:56px;height:56px;border-radius:50%;background:#fff;padding:2px;object-fit:contain;flex-shrink:0}
+.hd-txt small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);font-weight:600}
+.hd-txt strong{font-size:1.25rem;line-height:1.2;color:#fff;font-weight:700}
+.hd-search{margin-left:auto;position:relative}
+.hd-search input{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:9px 16px;font:inherit;font-size:15px;width:230px}
+.hd-search input::placeholder{color:rgba(255,255,255,.75)}
+.progress{height:4px;background:rgba(255,255,255,.12)}
+.progress i{display:block;height:100%;width:0;background:var(--green-l)}
+
+/* hero */
+.hero-band{background:#fff;border-bottom:1px solid var(--line)}
+.hero{max-width:1180px;margin:0 auto;padding:54px 20px 40px}
+.kicker{display:inline-block;background:rgba(46,125,50,.1);color:var(--green);padding:5px 14px;border-radius:999px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.hero h1{font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.12;margin:18px 0 14px;font-weight:800;color:var(--green-dd);letter-spacing:-.01em}
+.hero h1 em{color:var(--green);font-style:normal}
+.hero p.lead{max-width:760px;color:var(--muted);font-size:1.15rem;margin:0 0 26px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:var(--tint);border:1px solid var(--tint-2);border-radius:999px;padding:6px 14px;font-size:14px;color:var(--green-d);font-weight:500}
+.notice{margin-top:30px;background:var(--tint);border:1px solid var(--tint-2);border-left:5px solid var(--green);border-radius:var(--radius);padding:16px 20px;font-size:15.5px;max-width:860px}
+
+/* layout */
+.wrap{max-width:1180px;margin:0 auto;padding:34px 20px 70px;display:grid;grid-template-columns:260px 1fr;gap:44px}
+code{background:var(--tint);color:var(--green-dd);padding:1px 7px;border-radius:5px;font-size:.92em;font-family:ui-monospace,Menlo,Consolas,monospace}
+.wrap>*{min-width:0}
+.prompt-b,.bib li,td{overflow-wrap:anywhere}
+.toc{position:sticky;top:96px;align-self:start;max-height:calc(100vh - 120px);overflow:auto;padding-right:6px}
+.toc h2{font-size:1rem;margin:0 0 10px;color:var(--green-d);text-transform:uppercase;letter-spacing:.1em;font-weight:800}
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+.toc li{counter-increment:t}
+.toc a{display:flex;gap:10px;padding:7px 10px;border-radius:8px;color:var(--muted);text-decoration:none;font-size:14.5px;line-height:1.35;border-left:3px solid transparent}
+.toc a::before{content:counter(t);color:var(--green);font-weight:700;min-width:18px}
+.toc a:hover{background:#fff;color:var(--text)}
+.toc a.on{background:var(--tint);color:var(--green-dd);border-left-color:var(--green);font-weight:600}
+
+/* sections */
+section.sec{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:34px 34px 28px;margin-bottom:26px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+section.sec.hidden{display:none}
+.sec-num{color:var(--green);font-weight:800;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase}
+.sec h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.22;margin:6px 0 14px;color:var(--green-dd);font-weight:800}
+.sec h3{font-size:1.1rem;color:var(--green);margin:26px 0 8px;font-weight:700}
+.sec p{margin:0 0 14px}
+.sec ul,.sec ol.steps{padding-left:22px;margin:0 0 16px}
+.sec li{margin-bottom:6px}
+.sec li::marker{color:var(--green);font-weight:700}
+.hl{background:var(--surface-2);border-left:5px solid var(--green-l);border-radius:10px;padding:14px 18px;margin:18px 0;font-size:16px}
+.hl.warn{background:var(--tint);border-left-color:var(--green-d)}
+.hl strong{color:var(--green-dd)}
+
+table{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:15.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:var(--green-d);color:#fff;text-align:left;padding:11px 14px;font-weight:700}
+td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;color:var(--text)}
+tr:nth-child(even) td{background:var(--surface-2)}
+.tw{overflow-x:auto}
+
+/* prompt cards */
+.prompt{background:#fff;border:1px solid var(--tint-2);border-radius:12px;margin:16px 0;overflow:hidden}
+.prompt-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px;background:var(--tint);border-bottom:1px solid var(--tint-2)}
+.prompt-h span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--green-d)}
+.copy{font:inherit;font-size:13.5px;font-weight:600;background:var(--green);color:#fff;border:0;border-radius:999px;padding:6px 16px;cursor:pointer;transition:background .15s}
+.copy:hover{background:var(--green-d)}
+.copy.ok{background:var(--green-dd);color:#fff}
+.prompt-b{margin:0;padding:16px 18px;font-family:'Inter',system-ui,sans-serif;font-size:15.5px;line-height:1.65;white-space:pre-wrap;color:var(--text);background:#fbfdfb}
+
+/* checklist */
+.check{list-style:none;padding:0!important}
+.check li{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);border:1px solid var(--tint-2);border-radius:10px;padding:10px 14px}
+.check input{margin-top:6px;accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
+.check label{cursor:pointer;flex:1}
+.check input:checked + label{color:#6b786c;text-decoration:line-through;text-decoration-color:var(--green)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--surface-2);border:1px solid var(--tint-2);border-top:4px solid var(--green);border-radius:12px;padding:16px 18px}
+.card h4{margin:0 0 8px;color:var(--green-dd);font-size:1.05rem;font-weight:700}
+.card p{margin:0;font-size:15.5px;color:var(--text)}
+.empty{display:none;text-align:center;color:var(--muted);padding:40px 0}
+
+/* credits + footer */
+.credit{border:2px dashed var(--green-l)}
+.bib li{margin-bottom:10px}
+footer{background:var(--green-dd);color:rgba(255,255,255,.88)}
+.ft-in{max-width:1180px;margin:0 auto;padding:30px 20px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;font-size:15px}
+.ft-in strong{color:#fff;font-size:1.05rem}
+.ft-in a{color:#c8e6c9}
+.ft-in a:hover{color:#fff}
+
+/* back to top */
+#top{position:fixed;right:20px;bottom:22px;z-index:60;width:48px;height:48px;border-radius:50%;border:2px solid #fff;background:var(--green);color:#fff;font-size:22px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{transform:translateY(-3px);background:var(--green-d)}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:20px}
+  .toc{position:static;max-height:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .hd-search{display:none}
+  .cols{grid-template-columns:1fr}
+  section.sec{padding:24px 18px}
+}
+@media print{
+  body{background:#fff}
+  .site-header,.toc,#top,.copy,.hd-search{display:none!important}
+  section.sec{box-shadow:none;break-inside:auto}
+  .prompt{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="hd-in">
+    <img class="logo" src="data:image/png;base64,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" alt="Logo IIS Gregorio Mendel">
+    <div class="hd-txt">
+      <small>IIS Gregorio Mendel · Villa Cortese (MI)</small>
+      <strong>Guida pratica a Google Gemini</strong>
+    </div>
+    <div class="hd-search"><input id="q" type="search" placeholder="Cerca nella guida…" aria-label="Cerca nella guida"></div>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+</header>
+
+<div class="hero-band"><div class="hero">
+  <span class="kicker">Formazione docenti · Ottobre 2026</span>
+  <h1>Lavorare con <em>Gemini</em> a scuola: procedure, controlli e prompt pronti</h1>
+  <p class="lead">Dalla configurazione iniziale a Canvas, Workspace, Deep Research e NotebookLM. Ogni sezione contiene passaggi da seguire e prompt da copiare con un clic e adattare al proprio lavoro.</p>
+  <div class="chips">
+    <span class="chip">Account personale o Workspace</span><span class="chip">Istruzioni personali</span><span class="chip">Gem</span><span class="chip">Canvas</span><span class="chip">Documenti · Presentazioni · Moduli</span><span class="chip">Deep Research</span><span class="chip">NotebookLM</span>
+  </div>
+  <div class="notice"><strong>Nota sulla fonte.</strong> Questa pagina rielabora per i docenti dell'IIS Mendel la «Guida pratica a Google Gemini» di Mariano Pierantozzi (edizione di settembre 2026). Funzioni, limiti e prezzi cambiano spesso: verifica sempre ciò che vedi nel tuo account.</div>
+</div></div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Indice">
+    <h2>In questa guida</h2>
+    <ol id="toc">
+      <li><a href="#s1">Piani e disponibilità</a></li>
+      <li><a href="#account">Gemini personale o con Workspace</a></li>
+      <li><a href="#s2">Far conoscere a Gemini chi sei</a></li>
+      <li><a href="#s3">Scegliere il modello</a></li>
+      <li><a href="#s4">Gem e skill</a></li>
+      <li><a href="#s5">Analizzare un video YouTube</a></li>
+      <li><a href="#s6">Creare con Canvas</a></li>
+      <li><a href="#s7">Documenti, Presentazioni, Moduli</a></li>
+      <li><a href="#s8">Deep Research</a></li>
+      <li><a href="#s9">NotebookLM e Gemini insieme</a></li>
+      <li><a href="#s10">Controlli di qualità e privacy</a></li>
+      <li><a href="#s11">Prompt di uso generale</a></li>
+      <li><a href="#s12">Fonte e crediti</a></li>
+    </ol>
+  </nav>
+
+  <main id="content">
+
+    <section class="sec" id="s1">
+      <div class="sec-num">Sezione 1</div>
+      <h2>Prima di iniziare: piani e disponibilità</h2>
+      <p>Gemini è l'assistente di intelligenza artificiale di Google. Il suo punto di forza pratico emerge quando lavora con i tuoi materiali e con gli strumenti Google che usi già ogni giorno.</p>
+      <h3>I tre piani a pagamento</h3>
+      <div class="tw"><table>
+        <tr><th>Piano</th><th>A chi può servire</th><th>Elementi principali</th></tr>
+        <tr><td>AI Plus</td><td>Primo passo a pagamento</td><td>Limiti più ampi, 400 GB di spazio, funzioni AI essenziali</td></tr>
+        <tr><td>AI Pro</td><td>Uso frequente e attività complesse</td><td>Limiti estesi, modelli Pro, Deep Research, 5 TB</td></tr>
+        <tr><td>AI Ultra</td><td>Uso intensivo e funzioni avanzate</td><td>Limiti superiori, strumenti selezionati, 20 TB o più</td></tr>
+      </table></div>
+      <div class="hl warn"><strong>Attenzione.</strong> Il prezzo promozionale del primo periodo non coincide con quello di rinnovo. Molte funzioni dipendono da paese, lingua, tipo di account, piano e distribuzione graduale: controlla sempre la pagina dei piani mostrata nel tuo account prima di sottoscrivere.</div>
+      <p>Questi piani riguardano gli <strong>account Google personali</strong>. A scuola lavoriamo con l'account Workspace dell'istituto, che ha regole, protezioni e controlli diversi: li trovi nella sezione successiva. Per provare le attività di questa guida non serve un abbonamento personale.</p>
+    </section>
+
+    <section class="sec" id="account">
+      <div class="sec-num">Sezione 2</div>
+      <h2>Gemini personale o Gemini con Workspace?</h2>
+      <p>È lo stesso assistente, ma cambia <strong>chi gestisce l'account</strong> e, con lui, il modo in cui vengono trattati i tuoi dati. Per il lavoro scolastico la scelta giusta è l'account Workspace dell'istituto, non quello personale (per esempio un indirizzo Gmail).</p>
+      <div class="tw"><table>
+        <tr><th>Aspetto</th><th>Account Google personale</th><th>Account Workspace della scuola</th></tr>
+        <tr><td>Chi lo gestisce</td><td>Tu, da solo.</td><td>L'istituto. L'amministratore decide se attivare Gemini, per chi (per unità organizzativa o per gruppo) e con quali impostazioni.</td></tr>
+        <tr><td>Uso dei dati per addestrare i modelli</td><td>Con «Attività nelle app Gemini» attiva, chat e contenuti condivisi sono usati anche per sviluppare e migliorare i servizi Google, compreso l'addestramento dei modelli. Disattivando l'attività, le nuove chat non servono all'addestramento, salvo l'invio di un feedback.</td><td>Con le protezioni di livello aziendale i contenuti non sono usati per addestrare i modelli fuori dal dominio senza autorizzazione. Per Workspace for Education Google dichiara inoltre che i dati non addestrano i modelli e non sono condivisi con altri utenti o istituzioni.</td></tr>
+        <tr><td>Revisione da parte di persone</td><td>Un campione delle chat è letto da revisori, anche esterni, per migliorare il servizio e controllare le violazioni delle regole. Le chat vengono scollegate dall'account, ma quelle riviste restano conservate fino a tre anni, anche se cancelli la tua attività.</td><td>Con le protezioni di livello aziendale i contenuti non sono riletti da persone. Se invece Gemini è attivo come servizio aggiuntivo, e non come servizio principale della piattaforma, le chat possono essere riviste.</td></tr>
+        <tr><td>Cronologia delle chat</td><td>Scegli tu: eliminazione automatica a 3, 18 (predefinito) o 36 mesi, oppure nessuna eliminazione. Con l'attività disattivata le chat restano comunque per 72 ore.</td><td>La decide l'amministratore: conservazione a 3, 18 (predefinito) o 36 mesi. Solo lui può disattivarla, e può anche stabilire se gli utenti possono cancellare le singole chat. A cronologia disattivata Google può conservare i dati fino a 72 ore.</td></tr>
+        <tr><td>App collegate (Documenti, Drive, Gmail…)</td><td>Se disattivi l'attività, alcune app collegate, comprese quelle di Workspace, non sono più disponibili.</td><td>Le funzioni collegate dipendono dalla licenza e dalle impostazioni attivate dall'amministratore.</td></tr>
+        <tr><td>Minori di 18 anni</td><td>Valgono i limiti di età dell'account Google.</td><td>Per gli studenti under 18 le funzioni sono ridotte: sono disponibili, per esempio, Gem, Canvas e Quiz, mentre Deep Research, Gemini Live e la generazione di video non lo sono. Gemini integrato in Documenti, Presentazioni e simili non è disponibile sotto i 18 anni.</td></tr>
+      </table></div>
+      <div class="hl warn"><strong>Un dettaglio che conta:</strong> l'informativa di Google per gli account personali precisa che quelli di lavoro o di scuola «possono essere soggetti a condizioni diverse» per il trattamento dei dati. Le protezioni dipendono quindi da come Gemini è stato attivato nell'istituto, e non dal solo fatto di avere un account scolastico.</div>
+      <h3>Cosa significa per il tuo lavoro</h3>
+      <ul>
+        <li>Per tutto ciò che riguarda la scuola usa l'<strong>account dell'istituto</strong>. Prima di scrivere, controlla in alto a destra con quale account sei collegato.</li>
+        <li>Con un account personale <strong>non inserire</strong> dati di studenti o colleghi, verbali, documenti interni o materiali riservati.</li>
+        <li>Anche con Workspace i dati personali di studenti (nomi, valutazioni, diagnosi DSA e BES) vanno evitati o resi anonimi: restano valide le regole dell'istituto sulla protezione dei dati e sull'uso dell'IA.</li>
+        <li>Se non sai come è attivato Gemini nel tuo account o per la tua classe di utenti, chiedi al Team Digitale: la verifica si fa nella console di amministrazione.</li>
+        <li>Con gli studenti minorenni usa solo le funzioni disponibili per la loro fascia di età e solo nell'ambito che l'istituto ha previsto.</li>
+      </ul>
+      <p style="font-size:15px;color:var(--muted)">Le informazioni di questa sezione sono state verificate sulle pagine ufficiali di Google il 25 ottobre 2026; condizioni e limiti possono cambiare, quindi controlla sempre le pagine indicate in bibliografia.</p>
+    </section>
+
+    <section class="sec" id="s2">
+      <div class="sec-num">Sezione 3</div>
+      <h2>Far conoscere a Gemini chi sei</h2>
+      <p>Cambiando assistente si perde il contesto accumulato. Si può ridurre il problema chiedendo al chatbot che usi già di preparare un profilo sintetico, controllandolo con attenzione e inserendolo nelle istruzioni personali di Gemini.</p>
+      <div class="hl"><strong>Account scolastico:</strong> alcune funzioni di questa sezione (memoria, istruzioni personali, importazione da altri chatbot) possono essere diverse o assenti nell'account Workspace dell'istituto. Controlla in Impostazioni cosa è disponibile e non inserire dati di studenti.</div>
+      <h3>Procedura</h3>
+      <ol class="steps">
+        <li>Chiedi all'altro assistente un profilo basato <strong>solo</strong> su ciò che sa davvero di te.</li>
+        <li>Leggilo con calma ed elimina dati sensibili, dettagli superflui e deduzioni sbagliate.</li>
+        <li>In Gemini apri <strong>Impostazioni → Contesto personale → Le tue istruzioni per Gemini</strong>.</li>
+        <li>Con <strong>Aggiungi</strong> separa, se vuoi, «Chi sono» da «Come voglio le risposte».</li>
+        <li>Attiva la memoria solo se vuoi che Gemini usi le chat precedenti per personalizzare le risposte.</li>
+      </ol>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare · profilo da trasferire</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Prepara un profilo sintetico da trasferire a un altro assistente AI. Usa soltanto le informazioni su di me che hai effettivamente a disposizione: lavoro, interessi, attività ricorrenti, obiettivi e preferenze sulle risposte. Distingui i fatti dalle tue deduzioni. Escludi informazioni sensibili e dettagli su altre persone. Scrivi in prima persona, in un testo ordinato che io possa controllare e modificare.</pre></div>
+      <h3>Istruzioni personali di esempio per un docente</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare · istruzioni personali</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Rispondi in italiano con un linguaggio chiaro, preciso e naturale. Sono un docente di scuola secondaria di secondo grado: parti da esempi concreti e introduci i termini tecnici solo quando servono. Non inventare dati, fonti o riferimenti normativi. Se una mia affermazione è debole o scorretta, segnalalo e spiegami perché. Distingui sempre ciò che è verificato dalle ipotesi.</pre></div>
+      <div class="cols">
+        <div class="card"><h4>Memoria</h4><p>Ricava informazioni dalle conversazioni che hai con Gemini.</p></div>
+        <div class="card"><h4>Istruzioni personali</h4><p>Dichiarano in modo esplicito le tue preferenze e i tuoi criteri.</p></div>
+      </div>
+      <div class="hl"><strong>L'importazione da un altro chatbot</strong> trasferisce un riepilogo o una cronologia, secondo le opzioni disponibili nel tuo account.</div>
+    </section>
+
+    <section class="sec" id="s3">
+      <div class="sec-num">Sezione 4</div>
+      <h2>Scegliere il modello adatto</h2>
+      <p>Il modello più potente non serve per ogni richiesta. Conviene scegliere in base alla complessità del lavoro, al tempo che hai e ai limiti del tuo piano.</p>
+      <div class="tw"><table>
+        <tr><th>Tipo di lavoro</th><th>Esempio</th><th>Scelta pratica</th></tr>
+        <tr><td>Rapido</td><td>Accorciare la descrizione di un progetto</td><td>Modello veloce</td></tr>
+        <tr><td>Intermedio</td><td>Costruire la scaletta di una lezione</td><td>Modello con più ragionamento</td></tr>
+        <tr><td>Avanzato</td><td>Controllare un testo tecnico</td><td>Il modello più capace disponibile</td></tr>
+      </table></div>
+      <h3>Tre richieste, tre livelli</h3>
+      <div class="prompt"><div class="prompt-h"><span>Richiesta rapida</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Riduci questa descrizione di progetto a 600 caratteri. Mantieni l'argomento, il beneficio per gli studenti e un invito finale. Non aggiungere promesse che non compaiono nel testo.
+
+[INCOLLA LA DESCRIZIONE]</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Richiesta intermedia</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Organizza una lezione di 50 minuti su [ARGOMENTO] per una classe [CLASSE]. Prevedi un'apertura, tre esempi di difficoltà crescente e una conclusione con un'attività pratica. Spiega il collegamento fra i passaggi.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Richiesta avanzata</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Analizza questo testo tecnico. Controlla la coerenza scientifica, individua le assunzioni non dichiarate e segnala le frasi che potrebbero confondere concetti vicini (per esempio energia e potenza). Proponi correzioni motivate, senza riscrivere tutto.
+
+[INCOLLA IL TESTO]</pre></div>
+      <div class="hl warn"><strong>I limiti d'uso</strong> nell'app non corrispondono necessariamente a un unico contatore: modelli e strumenti diversi possono avere soglie diverse.</div>
+    </section>
+
+    <section class="sec" id="s4">
+      <div class="sec-num">Sezione 5</div>
+      <h2>Creare un Gem personale (e le nuove skill)</h2>
+      <p>Un Gem è una versione di Gemini dedicata a un compito che si ripete. Contiene istruzioni stabili e, se serve, file di riferimento. Ha senso crearne uno quando ti accorgi di scrivere sempre lo stesso tipo di richiesta.</p>
+      <div class="hl warn"><strong>Aggiornamento di ottobre 2026:</strong> Google sta sostituendo i Gem con le <strong>skill</strong>. I Gem funzionano ancora e quanto segue resta valido, ma in fondo a questa sezione trovi cosa cambia e le date da conoscere.</div>
+      <h3>Esempio: revisore e tutor di inglese</h3>
+      <div class="prompt"><div class="prompt-h"><span>Istruzioni del Gem</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Sei un revisore di testi in inglese e mi aiuti a capire i miei errori per migliorare. Controlla ortografia, grammatica, punteggiatura e scelta delle parole, mantenendo significato e tono. Mostra prima il testo corretto, con le modifiche in grassetto. Poi spiega in italiano ogni errore: forma originale, correzione e motivo. Distingui gli errori dalle semplici alternative stilistiche. Alla fine riassumi le regole da ricordare e proponi un breve esercizio. Aspetta la mia risposta prima di mostrare la soluzione.</pre></div>
+      <h3>Testo di prova</h3>
+      <div class="prompt"><div class="prompt-h"><span>Da incollare nel Gem per provarlo</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Last week our class have visited a farm. The students was very interested, but some of them doesn't understand the technical words. I want to explain it better the next time, so I will prepares a short glossary before to go.</pre></div>
+      <h3>Come valutare il risultato</h3>
+      <ul>
+        <li>Corregge gli errori senza cambiare il significato inutilmente?</li>
+        <li>Spiega la regola in modo comprensibile?</li>
+        <li>Distingue l'errore dalla scelta di stile?</li>
+        <li>Propone un esercizio coerente con gli errori trovati?</li>
+      </ul>
+      <h3>Altre idee di Gem per la scuola</h3>
+      <div class="cols">
+        <div class="card"><h4>Bozza di verbale</h4><p>Riceve appunti sparsi e restituisce un verbale con struttura fissa (presenti, ordine del giorno, delibere).</p></div>
+        <div class="card"><h4>Verifiche differenziate</h4><p>Parte da una verifica e propone la versione semplificata, mantenendo lo stesso tipo di esercizi e riducendo il numero di quesiti.</p></div>
+        <div class="card"><h4>Rubrica di valutazione</h4><p>Trasforma gli obiettivi di una prova in una griglia con livelli e descrittori da rivedere.</p></div>
+        <div class="card"><h4>Comunicazioni alle famiglie</h4><p>Riscrive un avviso in tono chiaro e cordiale, senza aggiungere informazioni che non hai fornito.</p></div>
+      </div>
+          <h3 id="skill">Novità: le skill stanno sostituendo i Gem</h3>
+      <p>Le <strong>skill</strong> sono istruzioni riutilizzabili che dicono a Gemini come svolgere un certo compito. Si richiamano scrivendo <code>/</code> nella chat (Google indica che in futuro il simbolo diventerà <code>@</code>) e se ne possono usare <strong>più di una</strong> nella stessa richiesta o in momenti diversi della conversazione. Sono scritte in un formato aperto, basato su un file di testo chiamato <code>SKILL.md</code>, quindi le istruzioni si possono portare da altri strumenti.</p>
+      <div class="tw"><table>
+        <tr><th>Aspetto</th><th>Gem</th><th>Skill</th></tr>
+        <tr><td>Come si usano</td><td>Si apre un Gem alla volta.</td><td>Si richiamano con <code>/</code> dentro la chat normale, anche più insieme.</td></tr>
+        <tr><td>Dove funzionano</td><td>Solo nell'app Gemini.</td><td>Nell'app Gemini e, quando saranno disponibili, anche nelle app Workspace.</td></tr>
+        <tr><td>Formato</td><td>Interno a Gemini.</td><td>Aperto (<code>SKILL.md</code>), riutilizzabile altrove.</td></tr>
+      </table></div>
+      <h3>Le date da tenere a mente</h3>
+      <ul>
+        <li><strong>Dal 13 ottobre 2026:</strong> le skill arrivano nell'app Gemini, con completamento atteso entro metà novembre. Se non le vedi ancora nel tuo account, è normale.</li>
+        <li><strong>17 novembre 2026:</strong> i Gem si spostano nelle Impostazioni, ma restano pienamente utilizzabili.</li>
+        <li><strong>Dal 1° giugno 2027, al più presto (scuola):</strong> i Gem non potranno più essere creati, modificati o usati, e verranno tolti anche da Google Classroom. Quelli rimasti diventeranno bozze di skill. Google ha promesso di dare i dettagli almeno 30 giorni prima.</li>
+        <li><strong>Skill dentro Documenti, Presentazioni e le altre app Workspace:</strong> il lancio è stato rinviato a data da comunicare, e lì sono previste solo per utenti maggiorenni.</li>
+      </ul>
+      <div class="hl"><strong>Cosa fare adesso:</strong> non c'è fretta di abbandonare i Gem. Conviene però salvare in un file di testo le istruzioni dei Gem più importanti e conservare i file di riferimento che hai caricato: Google consiglia di ricostruire per tempo i Gem essenziali come skill. Le istruzioni dell'esempio qui sopra si possono riusare quasi uguali in una skill.</div>
+      <h3>Cose da sapere</h3>
+      <ul>
+        <li>Le skill create nell'app Gemini <strong>non si sincronizzano</strong> con quelle delle app Workspace: vanno ricreate separatamente.</li>
+        <li>Dopo la migrazione automatica, i Gem convertiti arrivano come <strong>bozze inattive</strong>: nomi, descrizioni, istruzioni e file si mantengono, ma vanno riviste e attivate prima di poterle usare o condividere.</li>
+        <li>Nell'app Gemini le skill sono previste per utenti di tutte le età. Nelle app Workspace sono limitate ai maggiorenni e a determinate edizioni o componenti aggiuntivi.</li>
+        <li>Per l'app Gemini Google non prevede controlli per l'amministratore sulle skill; per le app Workspace sì. Per sapere cosa è attivo nel nostro istituto, chiedi al Team Digitale.</li>
+        <li>Quando carichi file di riferimento in una skill valgono le regole sulla privacy della sezione 2: niente dati di studenti.</li>
+      </ul>
+      <h3 id="crea-skill">Come creare la tua prima skill</h3>
+      <p>Nei video dimostrativi consultati, la gestione delle skill si trova nell'icona delle <strong>Impostazioni</strong> di Gemini, alla voce <strong>Competenze</strong> (<em>Skills</em> se l'interfaccia è in inglese). I video usano un account personale: nell'account della scuola la voce può comparire più tardi, secondo le date indicate qui sopra.</p>
+      <div class="cols">
+        <div class="card"><h4>1. Con l'aiuto di Gemini</h4><p>Scegli «Crea con Gemini» e descrivi l'obiettivo, la parola che deve attivarla, il risultato atteso e i vincoli. Gemini ti fa qualche domanda e poi salva la skill.</p></div>
+        <div class="card"><h4>2. A mano</h4><p>Compili tu tre campi: nome, descrizione e istruzioni. È il modo più rapido se hai già un testo pronto, per esempio le istruzioni di un Gem.</p></div>
+      </div>
+      <div class="card" style="margin-top:18px"><h4>3. Caricando un file</h4><p>Puoi caricare un file di testo in formato Markdown (estensione <code>.md</code>) che contiene nome, descrizione e istruzioni della skill.</p></div>
+      <h3>Usarla e gestirla</h3>
+      <ul>
+        <li>In una chat nuova scrivi <code>/</code> e scegli la skill dall'elenco. Passando il mouse sul nome si legge la descrizione, utile quando se ne hanno molte.</li>
+        <li>Dal menu dei tre puntini accanto a ogni skill puoi usarla subito, modificarla con Gemini o a mano, scaricarla, sostituirla, disattivarla o eliminarla.</li>
+        <li>Nella richiesta scrivi solo ciò che cambia (l'argomento, l'obiettivo didattico): il resto sta già nella skill. Quello che scrivi in chat prevale sulle istruzioni della skill, quindi puoi correggere il tiro caso per caso.</li>
+        <li>Una skill per compito, con un nome riconoscibile: «rubrica» o «piano di lezione» funzionano meglio di nomi generici.</li>
+      </ul>
+      <h3>Due esempi pensati per la scuola</h3>
+      <p>Sono i due esempi mostrati nei video, riadattati: un generatore di rubriche e un costruttore di piani di lezione da usare insieme a un notebook (vedi la sezione 10).</p>
+      <div class="prompt"><div class="prompt-h"><span>Richiesta per creare la skill «rubriche» con Gemini</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Vorrei creare una skill che genera rubriche di valutazione. Deve attivarsi quando scrivo "rubrica". Le rubriche sono per studenti di scuola secondaria di secondo grado (istituto tecnico e professionale agrario). Il risultato deve essere una tabella con criteri, descrittori e quattro livelli (avanzato, intermedio, base, in via di prima acquisizione), senza punteggi numerici, e con una sezione finale di autovalutazione per lo studente. Segui un approccio UDL. Prima di scrivere la skill, fammi le domande che ti servono.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Istruzioni per la skill «piano di lezione da notebook»</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Quando ti chiedo un piano di lezione a partire da un notebook, usa soltanto i contenuti del notebook allegato. Il piano deve avere sempre questa struttura: titolo; destinatari ([CLASSE E LIVELLO]); prerequisiti e vocabolario chiave; obiettivi di apprendimento (conoscenze, abilità, competenze); principi UDL applicati e materiali livellati; misure per studenti con bisogni educativi specifici, senza riferirti a singoli studenti; fasi in sequenza secondo il modello delle 5E (Engage, Explore, Explain, Elaborate, Evaluate); compito autentico; rubrica di valutazione. Se un'informazione non è nel notebook, dichiaralo.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Come usarla dopo averla creata</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Genera il piano di lezione sui contenuti del notebook allegato. Argomento e obiettivo didattico: [ARGOMENTO E OBIETTIVO].</pre></div>
+      <p>Prima di scrivere, richiama la skill con <code>/</code> e allega il notebook. Il risultato è una buona base di partenza, ma va sempre riletto e adattato alla tua classe.</p>
+      <div class="prompt"><div class="prompt-h"><span>Esempio di file .md da caricare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">---
+name: generatore-rubriche
+description: Genera una rubrica di valutazione in tabella quando l'utente scrive "rubrica".
+---
+
+Quando l'utente chiede una rubrica per un compito o un prodotto degli studenti:
+1. Chiedi, se manca, il tipo di compito e la classe.
+2. Produci una tabella con criteri, descrittori e quattro livelli: avanzato, intermedio, base, in via di prima acquisizione.
+3. Non usare punteggi numerici.
+4. Aggiungi una breve sezione di autovalutazione per lo studente.
+5. Segui i principi dell'UDL e usa un linguaggio chiaro.</pre></div>
+      <div class="hl warn"><strong>Prima di usarlo:</strong> la struttura esatta del file richiesta da Gemini può cambiare. Se il caricamento non riesce, crea la skill con Gemini e poi scaricala: avrai un file della forma corretta da usare come modello.</div>
+      <p style="font-size:15px;color:var(--muted)">Informazioni verificate sulle pagine ufficiali di Google il 25 ottobre 2026. Date e disponibilità sono in evoluzione: controlla sempre le fonti in bibliografia.</p>
+    </section>
+
+    <section class="sec" id="s5">
+      <div class="sec-num">Sezione 6</div>
+      <h2>Analizzare un video YouTube</h2>
+      <p>Gemini può lavorare a partire dal link di un video YouTube, se il contenuto è accessibile. È utile per ottenere una sintesi o per ritrovare un passaggio preciso, ma minuti e citazioni vanno sempre verificati nel video originale.</p>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare · sintesi</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Riassumi i punti principali di questo video. Distingui gli annunci dalle dimostrazioni pratiche. Se non riesci ad accedere al contenuto, dichiaralo e non ricostruirlo dal titolo: [LINK DEL VIDEO]</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare · affermazioni con minuto</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Dammi le dichiarazioni più importanti dei relatori su [ARGOMENTO]. Per ciascuna indica il minuto esatto e specifica se si tratta di un'affermazione, di una previsione o di una dimostrazione. Se non puoi verificare il minuto, dichiaralo.</pre></div>
+      <h3>Controlli indispensabili</h3>
+      <ul>
+        <li>Apri il minuto indicato e guarda se corrisponde.</li>
+        <li>Controlla che il riassunto non abbia alterato il significato.</li>
+        <li>Distingui ciò che viene mostrato da ciò che viene solo promesso.</li>
+        <li>Se il video non è accessibile, fornisci la trascrizione e ricorda che l'analisi riguarda quel testo.</li>
+      </ul>
+      <div class="hl"><strong>Uso in classe:</strong> prima di proporre un video agli studenti, usa questa procedura per verificare che contenga davvero ciò che serve alla lezione.</div>
+    </section>
+
+    <section class="sec" id="s6">
+      <div class="sec-num">Sezione 7</div>
+      <h2>Creare con Canvas</h2>
+      <p>Canvas permette di sviluppare e modificare passo dopo passo documenti, quiz, codice e piccole applicazioni. Il risultato resta visibile mentre chiedi correzioni e nuove funzioni.</p>
+      <h3>A. Quiz interattivo da una dispensa</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Usando la dispensa allegata, crea in Canvas un quiz interattivo di dieci domande. Mostra una domanda alla volta, con quattro opzioni plausibili di lunghezza simile. Distribuisci le risposte corrette fra le diverse posizioni. Dopo ogni risposta, spiega il motivo e richiama il passaggio pertinente della dispensa. Alla fine mostra il punteggio e gli argomenti da ripassare.</pre></div>
+      <div class="hl warn"><strong>Controllo:</strong> la risposta giusta non deve essere riconoscibile perché è la più lunga, la più precisa o sempre nella stessa posizione.</div>
+      <h3>B. Piccola applicazione verificabile</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Crea in Canvas una piccola applicazione in italiano per stimare consumo e costo di un elettrodomestico. Inserisci potenza in watt, ore di utilizzo al giorno e prezzo dell'energia in euro per kilowattora. Mostra consumo giornaliero, consumo in trenta giorni e costo. Rendi visibili formula, unità e ipotesi.</pre></div>
+      <div class="hl"><strong>Prova da fare a mano:</strong> 1000 W × 2 h al giorno = 2 kWh al giorno. Con 0,30 €/kWh il costo è 0,60 € al giorno e 18 € in 30 giorni. Se l'app mostra numeri diversi, c'è un errore.</div>
+      <h3>C. Revisione mirata di un testo</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Modifica soltanto l'introduzione. Riducila a circa ottanta parole, apri con una domanda concreta e anticipa cosa imparerà il lettore. Mantieni invariati i paragrafi successivi e non aggiungere nuove affermazioni.</pre></div>
+    </section>
+
+    <section class="sec" id="s7">
+      <div class="sec-num">Sezione 8</div>
+      <h2>Gemini in Documenti, Presentazioni e Moduli</h2>
+      <p>L'integrazione con Workspace permette di lavorare direttamente nello strumento in cui il contenuto verrà poi modificato, condiviso o somministrato. La disponibilità dipende dall'account e dal piano.</p>
+      <h3>Documenti: superare il foglio bianco</h3>
+      <div class="prompt"><div class="prompt-h"><span>Primo passaggio</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Devo scrivere un testo su [ARGOMENTO] ma sono davanti al foglio bianco. Non scrivere subito il testo. Proponimi tre possibili tagli, spiegando per ciascuno pubblico, domanda centrale ed esempio concreto. Poi aiutami a scegliere.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Secondo passaggio</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Sviluppiamo il taglio numero [N]. Proponimi una breve scaletta, due idee per l'apertura e una domanda che mi aiuti a inserire una mia esperienza personale.</pre></div>
+      <h3>Presentazioni: progettare prima delle slide</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Prepara la struttura di una presentazione per un laboratorio introduttivo sull'AI rivolto a colleghi docenti. Durata: 90 minuti. Pubblico: adulti con esperienza iniziale o nulla. Includi obiettivi osservabili, programma con tempi, una dimostrazione, un esercizio a coppie e una discussione finale. Verifica che i tempi sommino a 90 minuti.</pre></div>
+      <h3>Moduli: un questionario preliminare</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Crea in italiano un questionario preliminare per un laboratorio introduttivo sull'AI. Inserisci sei domande su frequenza d'uso, strumenti provati, attività svolte, difficoltà, capacità desiderate e aspettative. Usa scelta singola o multipla quando opportuno. Non chiedere dati identificativi.</pre></div>
+      <div class="hl warn"><strong>Prima di inviare il modulo:</strong> aprine l'anteprima, compilalo come farebbe un partecipante e controlla separatamente le impostazioni di raccolta di email e dati.</div>
+    </section>
+
+    <section class="sec" id="s8">
+      <div class="sec-num">Sezione 9</div>
+      <h2>Deep Research</h2>
+      <p>Deep Research costruisce un piano di ricerca, consulta molte fonti e produce un rapporto articolato. La qualità dipende dalla domanda iniziale e dai controlli che fai sulle fonti principali.</p>
+      <h3>Prima: far chiarire la domanda</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Voglio preparare un intervento su come l'uso dei chatbot influisce sull'apprendimento. Prima della ricerca, fammi cinque domande per chiarire pubblico, livello di istruzione, tipo di utilizzo dell'AI, risultati da valutare e periodo delle pubblicazioni. Attendi le mie risposte, poi proponi un prompt completo.</pre></div>
+      <h3>Poi: una ricerca ben delimitata</h3>
+      <div class="prompt"><div class="prompt-h"><span>Prompt pronto da copiare</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Cerca studi sull'uso dei chatbot generativi nell'apprendimento scolastico e universitario. Distingui prestazione durante l'uso dell'AI, comprensione, ricordo nel tempo e capacità di svolgere compiti senza assistenza. Confronta uso libero e attività guidate. Privilegia studi originali e revisioni, distinguendo peer review e preprint. Per ogni studio riporta link, anno, partecipanti, disegno, risultato e limiti. Separa associazioni e conclusioni causali. Concludi con prove, incertezze ed errori di interpretazione da evitare.</pre></div>
+      <h3>Verifiche da fare</h3>
+      <ul class="check">
+        <li><input type="checkbox" id="c1"><label for="c1">Ho letto il piano di ricerca prima di avviarla.</label></li>
+        <li><input type="checkbox" id="c2"><label for="c2">Ho aperto le fonti che sostengono le conclusioni principali.</label></li>
+        <li><input type="checkbox" id="c3"><label for="c3">Ho controllato popolazione studiata, metodo e misura dell'esito.</label></li>
+        <li><input type="checkbox" id="c4"><label for="c4">Ho distinto la qualità del compito svolto dall'apprendimento duraturo.</label></li>
+        <li><input type="checkbox" id="c5"><label for="c5">Non ho trasformato correlazioni in rapporti di causa.</label></li>
+      </ul>
+    </section>
+
+    <section class="sec" id="s9">
+      <div class="sec-num">Sezione 10</div>
+      <h2>NotebookLM e Gemini insieme</h2>
+      <p>Gemini può usare un notebook già costruito in NotebookLM come base documentale per generare nuove attività. Il notebook limita e rende consultabile il corpus di riferimento: le risposte restano ancorate ai tuoi materiali.</p>
+      <h3>Procedura</h3>
+      <ol class="steps">
+        <li>Apri Gemini e aggiungi alla conversazione il notebook che ti serve.</li>
+        <li>Chiedi un'attività coerente con i contenuti del notebook.</li>
+        <li>Tieni separate la consegna per gli studenti e le soluzioni per il docente.</li>
+        <li>Verifica che dati, esempi e soluzioni coincidano con le fonti del corso.</li>
+      </ol>
+      <div class="prompt"><div class="prompt-h"><span>Attività a coppie</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Usa il notebook "[NOME DEL NOTEBOOK]" per preparare un'attività di quindici minuti da svolgere a coppie. Gli studenti devono [OBIETTIVO DELL'ATTIVITÀ] e spiegare quali informazioni servono per arrivarci. Scrivi una consegna chiara e tre situazioni di difficoltà crescente, coerenti con i materiali. Tieni separate le soluzioni per il docente.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Variante: quiz interattivo</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Usa lo stesso notebook per creare un quiz di cinque domande per la classe [CLASSE]. Presenta una domanda alla volta con quattro opzioni plausibili di lunghezza simile. Aspetta la risposta prima della soluzione. Spiega il ragionamento e indica il materiale del notebook usato. Non introdurre dati assenti dalle fonti.</pre></div>
+      <div class="hl warn"><strong>La responsabilità resta del docente:</strong> il notebook delimita le fonti, ma la verifica didattica e scientifica del risultato spetta a te.</div>
+      <div class="hl"><strong>Con una skill:</strong> puoi combinare il notebook con una skill, per esempio un costruttore di piani di lezione con struttura fissa. Scrivi solo l'argomento: il resto sta già nelle istruzioni. Trovi gli esempi nella sezione 5.</div>
+    </section>
+
+    <section class="sec" id="s10">
+      <div class="sec-num">Sezione 11</div>
+      <h2>Controlli di qualità e privacy</h2>
+      <h3>Prima di usare il risultato</h3>
+      <ul class="check">
+        <li><input type="checkbox" id="q1"><label for="q1">Ho controllato numeri, unità, date, nomi e collegamenti.</label></li>
+        <li><input type="checkbox" id="q2"><label for="q2">Ho aperto le fonti primarie per le conclusioni importanti.</label></li>
+        <li><input type="checkbox" id="q3"><label for="q3">Ho provato quiz e moduli come farebbe uno studente.</label></li>
+        <li><input type="checkbox" id="q4"><label for="q4">Ho verificato a mano formule e risultati delle app.</label></li>
+        <li><input type="checkbox" id="q5"><label for="q5">Ho letto ad alta voce i testi pensati per essere ascoltati.</label></li>
+      </ul>
+      <h3>Prima di collegare dati personali</h3>
+      <ul class="check">
+        <li><input type="checkbox" id="p1"><label for="p1">Carico solo i materiali strettamente necessari.</label></li>
+        <li><input type="checkbox" id="p2"><label for="p2">Ho tolto informazioni sensibili e dettagli su terze persone.</label></li>
+        <li><input type="checkbox" id="p3"><label for="p3">Ho controllato quali app sono collegate e quali dati possono consultare.</label></li>
+        <li><input type="checkbox" id="p4"><label for="p4">Non uso documenti riservati senza una base e un'autorizzazione adeguate.</label></li>
+        <li><input type="checkbox" id="p5"><label for="p5">Rivedo ogni tanto memoria e istruzioni personali.</label></li>
+      </ul>
+      <div class="hl warn"><strong>A scuola, in più:</strong> evita di inserire nomi, valutazioni e diagnosi di singoli studenti (in particolare situazioni DSA e BES); se serve un esempio, usa dati inventati o resi anonimi.</div>
+      <div class="hl"><strong>Personale o Workspace:</strong> le garanzie sui dati non sono le stesse. Rileggi la sezione 2 prima di caricare materiali di lavoro.</div>
+      <div class="hl"><strong>Ricorda:</strong> una risposta fluida, un'interfaccia curata o una voce naturale non dimostrano che il contenuto sia corretto.</div>
+    </section>
+
+    <section class="sec" id="s11">
+      <div class="sec-num">Sezione 12</div>
+      <h2>Prompt di uso generale</h2>
+      <p>Sostituisci le parti fra parentesi quadre e aggiungi solo i vincoli che contano davvero per il tuo caso.</p>
+      <div class="prompt"><div class="prompt-h"><span>Preparazione di un'attività</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Aiutami a definire questa attività prima di svolgerla: [ATTIVITÀ]. Fammi fino a cinque domande su pubblico, obiettivo, materiali, formato e criteri di qualità. Poi proponi un prompt completo.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Lavorare solo sulle fonti</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Lavora soltanto sui materiali allegati. Per ogni affermazione importante indica la fonte interna utilizzata. Se un'informazione non è presente, dichiaralo. Non completare i vuoti con supposizioni.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Controllo finale</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Controlla questo risultato usando una lista di verifica: accuratezza, completezza, coerenza, dati e unità, fonti, rispetto dei vincoli, leggibilità per [PUBBLICO]. Se trovi un problema, indica posizione, motivo e correzione proposta.</pre></div>
+      <div class="prompt"><div class="prompt-h"><span>Iterazione controllata</span><button class="copy" type="button">Copia</button></div>
+<pre class="prompt-b">Crea una prima versione minima di [DOCUMENTO / QUIZ / APP]. Mostra anche le assunzioni e i criteri che hai usato. Poi fermati e chiedimi quale parte voglio modificare.</pre></div>
+    </section>
+
+    <section class="sec credit" id="s12">
+      <div class="sec-num">Sezione 13</div>
+      <h2>Fonte e crediti</h2>
+      <p>Questa pagina è una rielaborazione didattica, pensata per i docenti dell'IIS Mendel, della <strong>«Guida pratica a Google Gemini»</strong> di <strong>Mariano Pierantozzi</strong>, edizione aggiornata di settembre 2026, distribuita gratuitamente dall'autore. Struttura e argomenti seguono la guida originale; esempi, testi dei prompt e note per la scuola sono stati adattati. La sezione 2, le note sulla privacy e il paragrafo sulle skill sono stati aggiunti dal Team Digitale a partire dalla documentazione ufficiale di Google e, per i passaggi pratici, da due video dimostrativi indicati in bibliografia.</p>
+      <p>Per la versione originale, per i video e per gli aggiornamenti si possono consultare i canali ufficiali dell'autore (YouTube, Telegram, Instagram, Facebook, podcast), indicati in fondo alla guida.</p>
+      <h3 id="bibliografia">Bibliografia</h3>
+      <p><strong>Fonte principale</strong></p>
+      <ul class="bib">
+        <li>Pierantozzi, M. (2026). <em>Guida pratica Google Gemini: configurazione, modelli, Gem, YouTube, Canvas, Workspace, Deep Research e NotebookLM</em>. Edizione aggiornata, settembre 2026. Guida in formato PDF distribuita gratuitamente dall'autore. Consultata il 25 ottobre 2026.</li>
+      </ul>
+      <p><strong>Riferimenti ufficiali Google richiamati nella guida</strong></p>
+      <ul class="bib">
+        <li>Google. <em>Piani Google AI in Italia</em>. Pagina informativa sui piani AI Plus, AI Pro e AI Ultra.</li>
+        <li>Google. <em>Importare memoria e chat da altre piattaforme</em>. Guida di assistenza di Gemini.</li>
+        <li>Google. <em>Creare documenti, app e altro con Canvas</em>. Guida di assistenza di Gemini.</li>
+        <li>Google. <em>Creare moduli con Gemini in Google Forms</em>. Guida di assistenza di Google Workspace.</li>
+        <li>Google. <em>Deep Research</em>. Panoramica ufficiale di Gemini.</li>
+      </ul>
+      <p><strong>Documentazione ufficiale su privacy e account Workspace (sezione 2)</strong></p>
+      <ul class="bib">
+        <li>Google. <em>Gemini Apps Privacy Hub</em>. Informativa sul trattamento dei dati degli account personali, ultimo aggiornamento indicato: 10 agosto 2026. Consultata il 25 ottobre 2026. <a href="https://support.google.com/gemini/answer/13594961" target="_blank" rel="noopener">support.google.com/gemini/answer/13594961</a></li>
+        <li>Google Workspace. <em>Turn the Gemini app on or off</em>. Guida per amministratori su accesso, limiti di età, cronologia e protezione dei dati. Consultata il 25 ottobre 2026. <a href="https://knowledge.workspace.google.com/admin/generative-ai/gemini-app/turn-the-gemini-app-on-or-off" target="_blank" rel="noopener">knowledge.workspace.google.com</a></li>
+        <li>Google for Education. <em>Gemini for Google Workspace</em>. Pagina informativa su protezione dei dati e disponibilità per l'istruzione. Consultata il 25 ottobre 2026. <a href="https://edu.google.cat/workspace-for-education/add-ons/gemini-for-google-workspace" target="_blank" rel="noopener">edu.google.cat</a></li>
+      </ul>
+      <p><strong>Documentazione ufficiale sulle skill e sul passaggio dai Gem (sezione 5)</strong></p>
+      <ul class="bib">
+        <li>Google Workspace Updates (settembre 2026). <em>Introducing skills in the Gemini app and Workspace, plus what's next for Gems</em>. Consultata il 25 ottobre 2026. <a href="https://workspaceupdates.googleblog.com/2026/09/skills-gemini-app-workspace.html" target="_blank" rel="noopener">workspaceupdates.googleblog.com</a></li>
+        <li>Google Workspace Updates (13 ottobre 2026). <em>An update on launch of skills in Gemini app and Workspace</em>. Consultata il 25 ottobre 2026. <a href="https://workspaceupdates.googleblog.com/2026/10/an-update-on-launch-of-skills-in-gemini-app-and-workspace.html" target="_blank" rel="noopener">workspaceupdates.googleblog.com</a></li>
+        <li>Google Workspace Admin Help. <em>About the transition from Gems to skills</em>. Consultata il 25 ottobre 2026. <a href="https://knowledge.workspace.google.com/admin/generative-ai/gemini-app/about-the-transition-to-skills" target="_blank" rel="noopener">knowledge.workspace.google.com</a></li>
+        <li>Due video YouTube dimostrativi sulle Gemini Skills (creazione di una skill; uso di una skill insieme a un notebook): <a href="https://youtu.be/JzGydmsosNs" target="_blank" rel="noopener">youtu.be/JzGydmsosNs</a> e <a href="https://youtu.be/V1o7Yd3cxHI" target="_blank" rel="noopener">youtu.be/V1o7Yd3cxHI</a>. Consultati il 25 ottobre 2026 tramite trascrizione. Utili per i passaggi pratici; per date e disponibilità fanno fede le pagine ufficiali di Google.</li>
+      </ul>
+      <p style="font-size:15px;color:var(--muted)">Le pagine di Google si aggiornano spesso: per le informazioni più recenti consulta sempre la versione attuale sul sito di Google.</p>
+      <div class="hl warn"><strong>Aggiornamenti:</strong> Gemini cambia in fretta. Se una funzione o un menu non corrispondono a quanto descritto, fa fede ciò che vedi nel tuo account.</div>
+    </section>
+
+    <div class="empty" id="empty">Nessuna sezione corrisponde alla ricerca.</div>
+  </main>
+</div>
+
+<footer>
+  <div class="ft-in">
+    <div>
+      <strong>Istituto di Istruzione Superiore «Gregorio Mendel»</strong><br>
+      Via Ferrazzi, 15 — 20035 Villa Cortese (MI)<br>
+      <a href="https://agrariomendel.edu.it/">agrariomendel.edu.it</a>
+    </div>
+    <div style="text-align:right">
+      Pagina a cura del <strong style="font-size:1rem">Team Digitale</strong>
+    </div>
+  </div>
+</footer>
+
+<button id="top" type="button" aria-label="Torna su" title="Torna su">↑</button>
+
+<script>
+(function(){
+  /* copia prompt */
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var txt = btn.closest('.prompt').querySelector('.prompt-b').innerText.trim();
+      function done(){
+        btn.textContent = 'Copiato ✓'; btn.classList.add('ok');
+        setTimeout(function(){ btn.textContent = 'Copia'; btn.classList.remove('ok'); }, 1800);
+      }
+      function fallback(){
+        var ta = document.createElement('textarea');
+        ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch(e) { btn.textContent = 'Seleziona e copia'; }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, fallback);
+      } else { fallback(); }
+    });
+  });
+
+  /* torna su + barra di avanzamento */
+  var topBtn = document.getElementById('top'), bar = document.getElementById('bar');
+  function onScroll(){
+    var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    topBtn.classList.toggle('show', h.scrollTop > 500);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  topBtn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+
+  /* indice attivo */
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          links.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); });
+        }
+      });
+    }, {rootMargin:'-20% 0px -70% 0px'});
+    secs.forEach(function(s){ if (s) io.observe(s); });
+  }
+
+  /* ricerca */
+  var q = document.getElementById('q'), empty = document.getElementById('empty');
+  q.addEventListener('input', function(){
+    var t = q.value.trim().toLowerCase(), shown = 0;
+    document.querySelectorAll('section.sec').forEach(function(s){
+      var ok = !t || s.innerText.toLowerCase().indexOf(t) !== -1;
+      s.classList.toggle('hidden', !ok); if (ok) shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+  });
+})();
+</script>
+</body>
+</html>
